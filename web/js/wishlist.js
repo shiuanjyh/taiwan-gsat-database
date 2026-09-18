@@ -159,11 +159,11 @@ class WishlistManager {
       html += `</tr>`;
     }
 
-    // Row: Historical Screening Result (113)
-    html += `<tr style="background: var(--warning-bg);"><td style="font-weight: 700; position: sticky; left: 0; background: var(--warning-bg);">113 篩選最低門檻</td>`;
+    // Row: Historical Screening Result (115)
+    html += `<tr style="background: var(--warning-bg);"><td style="font-weight: 700; position: sticky; left: 0; background: var(--warning-bg);">115 篩選最低門檻</td>`;
     for (const item of this.items) {
-      const h113 = item.history?.find(h => h.year === '113');
-      const res = h113?.screening_result || item.cutoff_summary || '倍率依序篩選';
+      const h115 = item.history?.find(h => h.year === '115') || item.history?.[0];
+      const res = h115?.screening_result || item.cutoff_summary || '倍率依序篩選';
       html += `<td style="text-align: center; font-size: 0.85rem; font-weight: 600; color: #b45309;">${res}</td>`;
     }
     html += `</tr>`;

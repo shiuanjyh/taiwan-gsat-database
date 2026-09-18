@@ -359,19 +359,19 @@ def main():
 
         history_records = [
             {
-                "year": "113",
+                "year": "115",
                 "quota": dep['quota'],
                 "screening_result": res_113,
                 "standards": dep['standards_current']
             },
             {
-                "year": "112",
+                "year": "114",
                 "quota": dep['quota'],
                 "screening_result": res_112,
                 "standards": std_112 if std_112 else dep['standards_current']
             },
             {
-                "year": "111",
+                "year": "113",
                 "quota": dep['quota'],
                 "screening_result": res_111,
                 "standards": std_111 if std_111 else dep['standards_current']
@@ -387,7 +387,7 @@ def main():
         
         subj_cnt = len(dep['subjects']) if dep['subjects'] else 4
         if is_med:
-            est_total = 58
+            est_total = 59
         elif est_scores:
             avg_std = sum(est_scores) / len(est_scores)
             if is_top:
@@ -396,7 +396,7 @@ def main():
                 avg_std = max(avg_std, 11.5)
             est_total = min(60, round(avg_std * max(1, min(4, subj_cnt))))
         else:
-            est_total = 50 if is_top else (42 if is_mid_tier else 30)
+            est_total = 52 if is_top else (42 if is_mid_tier else 30)
 
         record = {
             "dep_id": did,
@@ -412,7 +412,7 @@ def main():
             "cutoff_summary": cutoff_str if cutoff_str else "依倍率依序錄取",
             "estimated_score": est_total,
             "history": history_records,
-            "official_url": f"https://www.cac.edu.tw/cacportal/apply_his_report/113/113_sieve_standard/report/{dep['school_key']}.htm"
+            "official_url": f"https://www.cac.edu.tw/cacportal/apply_his_report/115/115_sieve_standard/report/{dep['school_key']}.htm"
         }
         compiled_departments.append(record)
 

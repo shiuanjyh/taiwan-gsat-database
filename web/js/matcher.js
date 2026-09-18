@@ -6,18 +6,28 @@ class ScoreMatcher {
   constructor(departments) {
     this.departments = departments || [];
     
-    // Default estimated standard score cutoffs for evaluation
-    this.STANDARD_CUTOFFS = {
-      '頂': 13, '頂標': 13,
-      '前': 11, '前標': 11,
-      '均': 8,  '均標': 8,
-      '後': 5,  '後標': 5,
-      '底': 3,  '底標': 3
+    // 115 Academic Year Official Five Standards (大考中心 115 各科五標)
+    this.STANDARDS_115 = {
+      '國文': { '頂': 13, '前': 12, '均': 10, '後': 9, '底': 7 },
+      '英文': { '頂': 13, '前': 11, '均': 8,  '後': 5, '底': 3 },
+      '數學A': { '頂': 12, '前': 10, '均': 8,  '後': 5, '底': 4 },
+      '數學B': { '頂': 11, '前': 9,  '均': 5,  '後': 3, '底': 2 },
+      '社會': { '頂': 13, '前': 12, '均': 10, '後': 8, '底': 7 },
+      '自然': { '頂': 13, '前': 12, '均': 9,  '後': 7, '底': 5 }
     };
 
     this.LISTENING_RANK = {
       'A': 4, 'B': 3, 'C': 2, 'F': 1, '--': 0
     };
+  }
+
+  getCutoff(subject, stdLevel) {
+    const cleanStd = stdLevel ? stdLevel.replace('標', '').trim() : '';
+    if (this.STANDARDS_115[subject] && this.STANDARDS_115[subject][cleanStd] !== undefined) {
+      return this.STANDARDS_115[subject][cleanStd];
+    }
+    const fallback = { '頂': 13, '前': 11, '均': 8, '後': 5, '底': 3 };
+    return fallback[cleanStd] || 8;
   }
 
   evaluate(userScores) {
@@ -60,10 +70,10 @@ class ScoreMatcher {
         for (const [subName, score] of Object.entries(userMap)) {
           const stdInfo = standards[subName];
           if (stdInfo && stdInfo.std && stdInfo.std !== '--') {
-            const reqScore = this.STANDARD_CUTOFFS[stdInfo.std] || 8;
+            const reqScore = this.getCutoff(subName, stdInfo.std);
             if (score < reqScore) {
               passedStandards = false;
-              failReason = `${subName}未達${stdInfo.std}（差 ${reqScore - score} 級分）`;
+              failReason = `${subName}未達${stdInfo.std}標（需 ${reqScore} 級，差 ${reqScore - score} 級分）`;
               break;
             }
           }

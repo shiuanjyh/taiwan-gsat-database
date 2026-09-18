@@ -434,7 +434,7 @@ class App {
           </div>
 
           <div class="cutoff-preview">
-            <span style="font-weight: 700;">113 門檻:</span>
+            <span style="font-weight: 700;">115 門檻:</span>
             <span>${d.cutoff_summary || '倍率依序錄取'}</span>
           </div>
         </div>
@@ -465,7 +465,7 @@ class App {
               <th>地區</th>
               <th>名額</th>
               <th>採計考科</th>
-              <th>113 篩選門檻</th>
+              <th>115 篩選門檻</th>
               <th>預估級分</th>
               <th style="text-align: center;">詳情</th>
             </tr>
@@ -743,7 +743,7 @@ class App {
           <div class="matcher-card" style="padding: 20px;">
             <div style="font-size: 0.85rem; color: var(--text-muted);">涵蓋學年度</div>
             <div style="font-size: 2rem; font-weight: 800; color: var(--warning); margin: 6px 0;">近 3 年</div>
-            <div style="font-size: 0.8rem; color: var(--text-secondary);">111、112、113/114年度</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">113、114、115 最新三年</div>
           </div>
         </div>
 
@@ -855,9 +855,9 @@ class App {
     if (!modal || !content) return;
 
     const subjs = ['國文', '英文', '數學A', '數學B', '社會', '自然'];
-    const h113 = dept.history?.find(h => h.year === '113');
-    const h112 = dept.history?.find(h => h.year === '112');
-    const h111 = dept.history?.find(h => h.year === '111');
+    const h115 = dept.history?.find(h => h.year === '115') || dept.history?.[0];
+    const h114 = dept.history?.find(h => h.year === '114') || dept.history?.[1];
+    const h113 = dept.history?.find(h => h.year === '113') || dept.history?.[2];
 
     content.innerHTML = `
       <div class="modal-header">
@@ -888,7 +888,7 @@ class App {
             </div>
           </div>
           <div class="matcher-card" style="padding: 14px;">
-            <div class="info-label">113 最新篩選結果</div>
+            <div class="info-label">115 最新篩選結果</div>
             <div style="font-size: 0.95rem; font-weight: 700; color: #b45309; margin-top: 4px;">
               ${dept.cutoff_summary || '倍率依序錄取'}
             </div>
@@ -902,7 +902,7 @@ class App {
         </div>
 
         <div>
-          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;">📅 近三年（111-113）檢定標準與篩選倍率對照表</h3>
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;">📅 最新三年（113-115）檢定標準與篩選倍率對照表</h3>
           <div class="table-wrap">
             <table class="data-table">
               <thead>
@@ -920,6 +920,28 @@ class App {
               </thead>
               <tbody>
                 <tr>
+                  <td><strong>115 學年</strong></td>
+                  <td>${this.formatStdCell(h115?.standards?.['國文'])}</td>
+                  <td>${this.formatStdCell(h115?.standards?.['英文'])}</td>
+                  <td>${this.formatStdCell(h115?.standards?.['數學A'])}</td>
+                  <td>${this.formatStdCell(h115?.standards?.['數學B'])}</td>
+                  <td>${this.formatStdCell(h115?.standards?.['社會'])}</td>
+                  <td>${this.formatStdCell(h115?.standards?.['自然'])}</td>
+                  <td>${dept.standards?.['英聽'] || '--'}</td>
+                  <td><strong style="color: #b45309;">${h115?.screening_result || dept.cutoff_summary || '依序通過'}</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>114 學年</strong></td>
+                  <td>${this.formatStdCell(h114?.standards?.['國文'])}</td>
+                  <td>${this.formatStdCell(h114?.standards?.['英文'])}</td>
+                  <td>${this.formatStdCell(h114?.standards?.['數學A'])}</td>
+                  <td>${this.formatStdCell(h114?.standards?.['數學B'])}</td>
+                  <td>${this.formatStdCell(h114?.standards?.['社會'])}</td>
+                  <td>${this.formatStdCell(h114?.standards?.['自然'])}</td>
+                  <td>--</td>
+                  <td>${h114?.screening_result || '倍率依序通過'}</td>
+                </tr>
+                <tr>
                   <td><strong>113 學年</strong></td>
                   <td>${this.formatStdCell(h113?.standards?.['國文'])}</td>
                   <td>${this.formatStdCell(h113?.standards?.['英文'])}</td>
@@ -927,30 +949,8 @@ class App {
                   <td>${this.formatStdCell(h113?.standards?.['數學B'])}</td>
                   <td>${this.formatStdCell(h113?.standards?.['社會'])}</td>
                   <td>${this.formatStdCell(h113?.standards?.['自然'])}</td>
-                  <td>${dept.standards?.['英聽'] || '--'}</td>
-                  <td><strong style="color: #b45309;">${h113?.screening_result || dept.cutoff_summary || '依序通過'}</strong></td>
-                </tr>
-                <tr>
-                  <td><strong>112 學年</strong></td>
-                  <td>${this.formatStdString(h112?.standards?.['國文'])}</td>
-                  <td>${this.formatStdString(h112?.standards?.['英文'])}</td>
-                  <td>${this.formatStdString(h112?.standards?.['數學A'])}</td>
-                  <td>${this.formatStdString(h112?.standards?.['數學B'])}</td>
-                  <td>${this.formatStdString(h112?.standards?.['社會'])}</td>
-                  <td>${this.formatStdString(h112?.standards?.['自然'])}</td>
                   <td>--</td>
-                  <td>${h112?.screening_result || '倍率依序通過'}</td>
-                </tr>
-                <tr>
-                  <td><strong>111 學年</strong></td>
-                  <td>${this.formatStdString(h111?.standards?.['國文'])}</td>
-                  <td>${this.formatStdString(h111?.standards?.['英文'])}</td>
-                  <td>${this.formatStdString(h111?.standards?.['數學A'])}</td>
-                  <td>${this.formatStdString(h111?.standards?.['數學B'])}</td>
-                  <td>${this.formatStdString(h111?.standards?.['社會'])}</td>
-                  <td>${this.formatStdString(h111?.standards?.['自然'])}</td>
-                  <td>--</td>
-                  <td>${h111?.screening_result || '倍率依序通過'}</td>
+                  <td>${h113?.screening_result || '倍率依序通過'}</td>
                 </tr>
               </tbody>
             </table>
@@ -961,7 +961,7 @@ class App {
           <h4 style="font-weight: 700; margin-bottom: 6px;">🔗 官方權威簡章與連結</h4>
           <ul style="padding-left: 20px; line-height: 1.8;">
             <li>大學甄選入學委員會（CAC）官方歷年篩選結果：<a href="${dept.official_url}" target="_blank" rel="noreferrer">點此檢視官方原檔</a></li>
-            <li>大學個人申請校系分則簡章：<a href="https://www.cac.edu.tw/apply113/system/ColQry_forh113apply_8w9u2y/" target="_blank" rel="noreferrer">前往 CAC 甄選委員會網站</a></li>
+            <li>大學個人申請校系分則簡章：<a href="https://www.cac.edu.tw/" target="_blank" rel="noreferrer">前往 CAC 甄選委員會網站</a></li>
             <li>Google 快速搜尋該系評價與討論：<a href="https://www.google.com/search?q=${encodeURIComponent(dept.school_name + ' ' + dept.dep_name)}" target="_blank" rel="noreferrer">搜尋 ${dept.school_name} ${dept.dep_name}</a></li>
           </ul>
         </div>
