@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>全台大專院校近三年學測錄取成績與科系標準資料庫</title>
+  <meta name="description" content="完整收錄全台123所公私立大學、2,072個科系近三年（111-113學年度）學測檢定標準、篩選倍率、最低錄取門檻與超額篩選級分，提供多樣性條件篩選與智能落點分析。">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="brand">
+      <div class="brand-icon">🎓</div>
+      <div>
+        <div class="brand-title">
+          全台大學學測資料庫
+          <span class="badge badge-public badge-year">111-113 三年</span>
+        </div>
+        <div class="brand-subtitle">公私立 123 所大專院校 • 2,072 校系 • 18 大學群</div>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Tabs -->
+    <nav class="nav-tabs desktop-only">
+      <button class="nav-tab active" data-tab="browse" onclick="window.app.setTab('browse')">
+        <span>🔍</span> 校系條件檢索
+      </button>
+      <button class="nav-tab" data-tab="matcher" onclick="window.app.setTab('matcher')">
+        <span>🎯</span> 學測落點分析
+      </button>
+      <button class="nav-tab" data-tab="wishlist" onclick="window.app.setTab('wishlist')">
+        <span>📋</span> 6 大志願比對
+      </button>
+      <button class="nav-tab" data-tab="analytics" onclick="window.app.setTab('analytics')">
+        <span>📊</span> 大數據透視
+      </button>
+    </nav>
+
+    <!-- Right Actions -->
+    <div class="nav-actions">
+      <!-- Mobile Filter Trigger in Header -->
+      <button class="btn-icon mobile-only" id="mobile-filter-toggle" title="開啟篩選條件" onclick="window.app.toggleMobileSidebar()">
+        <span style="font-size: 1.05rem;">⚡</span>
+        <span class="badge-counter" id="mobile-filter-badge" style="display: none;">0</span>
+      </button>
+
+      <!-- Theme Switcher -->
+      <button class="btn-icon" id="theme-btn" title="切換深淺色外觀" onclick="window.app.toggleTheme()">
+        <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"></svg>
+      </button>
+
+      <!-- Wishlist Drawer Button (Desktop) -->
+      <button class="btn-icon desktop-only" title="查看 6 個志願清單" onclick="window.app.openWishlistDrawer()">
+        <span style="font-size: 1.1rem;">★</span>
+        <span class="badge-counter" id="wishlist-badge" style="display: none;">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Backdrop overlay for mobile sidebar -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="window.app.closeMobileSidebar()"></div>
+
+  <!-- Main Application Layout -->
+  <div class="app-container">
+    
+    <!-- Sidebar Multi-Criteria Filters -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <span>⚙️</span> 篩選條件
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="btn-link" onclick="window.app.resetAllFilters()">重設條件</button>
+          <button class="modal-close mobile-only" onclick="window.app.closeMobileSidebar()" aria-label="關閉選單">✕</button>
+        </div>
+      </div>
+
+      <!-- 1. Keyword Search -->
+      <div class="filter-section">
+        <label class="filter-label">關鍵字即時搜尋</label>
+        <div class="search-input-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" class="search-input" placeholder="搜尋學校、系名或簡稱 (如: 台大、資工)...">
+        </div>
+      </div>
+
+      <!-- 2. Fast Presets -->
+      <div class="filter-section">
+        <label class="filter-label">精選快捷名校分類</label>
+        <div class="preset-grid">
+          <button class="preset-btn" onclick="window.app.onTogglePreset('top5', this)">頂尖頂大 (台成清交政)</button>
+          <button class="preset-btn" onclick="window.app.onTogglePreset('central4', this)">中字輩 (央山興正)</button>
+          <button class="preset-btn" onclick="window.app.onTogglePreset('med', this)">醫學/牙藥聯盟</button>
+          <button class="preset-btn" onclick="window.app.onTogglePreset('top_private', this)">頂尖私立名校</button>
+          <button class="preset-btn" onclick="window.app.onTogglePreset('tech', this)">科技大學學士班</button>
+        </div>
+      </div>
+
+      <!-- 3. School Types -->
+      <div class="filter-section">
+        <label class="filter-label">學校體系與公私立</label>
+        <div class="filter-pills">
+          <button class="pill-btn" onclick="window.app.onToggleType('國立大學', this)">國立大學</button>
+          <button class="pill-btn" onclick="window.app.onToggleType('私立大學', this)">私立大學</button>
+          <button class="pill-btn" onclick="window.app.onToggleType('國立科技大學', this)">國立科大</button>
+          <button class="pill-btn" onclick="window.app.onToggleType('私立科技大學', this)">私立科大</button>
+        </div>
+      </div>
+
+      <!-- 4. Geographic Region -->
+      <div class="filter-section">
+        <label class="filter-label">地理區域</label>
+        <div class="filter-pills">
+          <button class="pill-btn" onclick="window.app.onToggleRegion('北部', this)">北部地區</button>
+          <button class="pill-btn" onclick="window.app.onToggleRegion('中部', this)">中部地區</button>
+          <button class="pill-btn" onclick="window.app.onToggleRegion('南部', this)">南部地區</button>
+          <button class="pill-btn" onclick="window.app.onToggleRegion('東部', this)">東部地區</button>
+          <button class="pill-btn" onclick="window.app.onToggleRegion('離島', this)">離島地區</button>
+        </div>
+      </div>
+
+      <!-- 5. 18 Academic Groups -->
+      <div class="filter-section">
+        <label class="filter-label">18 大學群 / 專業領域</label>
+        <div class="filter-pills" id="group-filter-pills"></div>
+      </div>
+
+      <!-- 6. Tested Subjects -->
+      <div class="filter-section">
+        <div class="filter-label">
+          <span>採計考科組合</span>
+        </div>
+        <div class="subject-grid">
+          <label class="subject-checkbox-card" onclick="window.app.onToggleSubject('國文', this)">
+            <input type="checkbox" style="pointer-events: none;"> 國文
+          </label>
+          <label class="subject-checkbox-card" onclick="window.app.onToggleSubject('英文', this)">
+            <input type="checkbox" style="pointer-events: none;"> 英文
+          </label>
+          <label class="subject-checkbox-card" onclick="window.app.onToggleSubject('數學A', this)">
+            <input type="checkbox" style="pointer-events: none;"> 數A
+          </label>
+          <label class="subject-checkbox-card" onclick="window.app.onToggleSubject('數學B', this)">
+            <input type="checkbox" style="pointer-events: none;"> 數B
+          </label>
+          <label class="subject-checkbox-card" onclick="window.app.onToggleSubject('社會', this)">
+            <input type="checkbox" style="pointer-events: none;"> 社會
+          </label>
+          <label class="subject-checkbox-card" onclick="window.app.onToggleSubject('自然', this)">
+            <input type="checkbox" style="pointer-events: none;"> 自然
+          </label>
+        </div>
+      </div>
+
+      <!-- 7. Standards Limit -->
+      <div class="filter-section">
+        <label class="filter-label">檢定標準門檻上限</label>
+        <div class="filter-pills">
+          <button class="pill-btn active" onclick="document.querySelectorAll('#sidebar .pill-btn-std').forEach(b=>b.classList.remove('active')); this.classList.add('active'); window.app.filterEngine.setMaxStandard('all'); window.app.render();">不限</button>
+          <button class="pill-btn pill-btn-std" onclick="document.querySelectorAll('#sidebar .pill-btn-std').forEach(b=>b.classList.remove('active')); this.classList.add('active'); window.app.filterEngine.setMaxStandard('均'); window.app.render();">均標以內</button>
+          <button class="pill-btn pill-btn-std" onclick="document.querySelectorAll('#sidebar .pill-btn-std').forEach(b=>b.classList.remove('active')); this.classList.add('active'); window.app.filterEngine.setMaxStandard('前'); window.app.render();">前標以內</button>
+        </div>
+      </div>
+
+      <!-- 8. Score Slider -->
+      <div class="filter-section">
+        <div class="filter-label">
+          <span>綜合預估級分</span>
+          <span id="score-val-label" class="highlight">0 級分以上</span>
+        </div>
+        <div class="slider-group">
+          <input type="range" id="score-range" min="0" max="55" step="1" value="0">
+          <div class="slider-val">
+            <span>0</span>
+            <span>20</span>
+            <span>40</span>
+            <span>55+</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;">
+        資料來源：教育部統計處、大學甄選入學委員會（CAC）歷年篩選標準一覽表，包含 111-113 學年度完整資料。
+      </div>
+
+      <!-- Mobile Sticky Apply Button inside drawer -->
+      <div class="sidebar-mobile-footer mobile-only">
+        <button class="btn-primary-large" style="width: 100%; padding: 12px;" onclick="window.app.closeMobileSidebar()">
+          確認並檢視結果
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="main-content" id="main-container">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>正在載入全台大專院校完整學測資料庫...</p>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Mobile Floating Filter Button (Only in Browse tab) -->
+  <button class="mobile-filter-fab mobile-only" id="mobile-filter-fab" onclick="window.app.openMobileSidebar()">
+    <span>⚡</span> 條件篩選
+    <span class="fab-badge" id="mobile-fab-badge" style="display: none;">0</span>
+  </button>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="bottom-nav mobile-only">
+    <button class="bottom-nav-item active" data-tab="browse" onclick="window.app.setTab('browse')">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-text">查校系</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="matcher" onclick="window.app.setTab('matcher')">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-text">落點分析</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="wishlist" onclick="window.app.setTab('wishlist')">
+      <span class="nav-icon">★
+        <span class="badge-counter" id="mobile-bottom-wishlist-badge" style="display: none;">0</span>
+      </span>
+      <span class="nav-text">6志願</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="analytics" onclick="window.app.setTab('analytics')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-text">大數據</span>
+    </button>
+  </nav>
+
+  <!-- Department Detail Modal -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="modal-container" id="modal-content"></div>
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="js/filter.js"></script>
+  <script src="js/matcher.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
