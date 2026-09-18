@@ -40,34 +40,89 @@
 
 ```
 taiwan-gsat-database/
+├── index.html                    # 根目錄首頁（相容 GitHub Pages 一鍵直接發布，免 Build）
+├── .nojekyll                     # 確保 GitHub Pages 靜態檔案完整輸出
+├── .gitignore                    # Git 忽略檔案設定
+├── .github/
+│   └── workflows/
+│       └── pages.yml             # GitHub Actions 自動部署工作流
+├── css/
+│   └── style.css                 # 現代化自適應樣式表（含深色/淺色主題、手機抽屜與觸控優化）
+├── js/
+│   ├── app.js                    # 主程式控制器與狀態管理
+│   ├── filter.js                 # 多條件篩選引擎（含台灣大專院校與科系同義詞擴展）
+│   ├── matcher.js                # 學測成績適配器（夢幻/目標/保底智能分類）
+│   ├── wishlist.js               # 6 志願清單與橫向比對矩陣模組
+│   └── export.js                 # UTF-8 BOM CSV 匯出與列印模組
 ├── data/
+│   ├── departments.js            # 科系資料集 JS 封裝（window.GSAT_DEPARTMENTS，零 CORS / 本機直接開啟）
+│   ├── schools.js                # 學校資料集 JS 封裝（window.GSAT_SCHOOLS）
+│   ├── departments.min.json      # 壓縮版科系 JSON（2.7MB）
 │   ├── departments.json          # 2,072 個科系完整詳細資料（包含三年標準、超篩與名額）
 │   ├── schools.json              # 123 所公私立學校清單與地區屬性
 │   └── taiwan_gsat.db            # SQLite3 關聯式資料庫（含索引）
 ├── scripts/
 │   └── 01_fetch_and_compile.py   # 自動化爬蟲與資料庫編譯腳本
-├── web/
-│   ├── index.html                # 現代化響應式網頁介面
-│   ├── css/
-│   │   └── style.css             # 樣式表（支援深色 / 淺色模式切換）
-│   ├── js/
-│   │   ├── app.js                # 主控制器與狀態管理
-│   │   ├── filter.js             # 多條件篩選與排序演算法
-│   │   ├── matcher.js            # 落點分析運算模組
-│   │   ├── wishlist.js           # 6 志願比較矩陣模組
-│   │   └── export.js             # CSV 匯出與列印輔助工具
-│   └── data/
-│       ├── departments.min.json  # Web 最佳化壓縮 JSON (載入 < 30ms)
-│       └── schools.json          # 學校元資料
 ├── server.py                     # 本地 Python HTTP & REST API 伺服器
 └── README.md                     # 本說明文件
 ```
 
 ---
 
-## 🚀 啟動與使用方式
+## 🌐 GitHub Pages 發布步驟指南
 
-### 方式一：透過本地 Python 伺服器（推薦）
+本專案經過特殊架構設計，**不需要任何 Node.js / Webpack 編譯步驟**，只要推送至 GitHub，即可立即啟用 GitHub Pages 發布！
+
+### 步驟一：初始化 Git 並推送到 GitHub
+
+打開終端機並進入本專案資料夾：
+
+```bash
+cd taiwan-gsat-database
+
+# 初始化 git
+git init
+git add .
+git commit -m "feat: 發布全台大專院校近三年學測資料庫網站"
+
+# 設定預設分支為 main
+git branch -M main
+
+# 關聯至您的 GitHub Repository（請將 USERNAME 與 REPO_NAME 換成您的帳號與倉庫名）
+git remote add origin https://github.com/USERNAME/REPO_NAME.git
+git push -u origin main
+```
+
+### 步驟二：開啟 GitHub Pages（兩種方式任選其一）
+
+#### 方式 A：GitHub 內建分支發布（推薦，30秒完成）
+1. 進入您在 GitHub 上的專案頁面。
+2. 點擊頂部 **Settings**（設定）分頁。
+3. 在左側選單點擊 **Pages**。
+4. 在 **Build and deployment** 下方的 **Source** 選擇 **Deploy from a branch**。
+5. 在 **Branch** 選取 `main` 分支與 `/(root)` 目錄，點擊 **Save**。
+6. 等候約 1~2 分鐘，重新整理頁面，頂部即會顯示發布成功的專屬網址：  
+   `https://<您的帳號>.github.io/<倉庫名稱>/`
+
+#### 方式 B：GitHub Actions 自動部署
+本專案已內建 `.github/workflows/pages.yml`：
+1. 進入 GitHub 專案的 **Settings** -> **Pages**。
+2. 在 **Build and deployment** 下方的 **Source** 切換為 **GitHub Actions**。
+3. 每次推送到 `main` 分支時，GitHub 就會自動執行工作流並部署完成！
+
+---
+
+## 🚀 本地執行方式
+
+### 方式一：直接雙擊開啟（離線零設定）
+
+本專案資料集已透過 `data/schools.js` 與 `data/departments.js` 全域變數注入，**即使直接用瀏覽器雙擊開啟根目錄的 `index.html`（`file://` 協議）**，也不會受到瀏覽器 CORS 本機跨域安全性阻擋，完全離線秒開！
+
+```bash
+open index.html
+```
+
+### 方式二：透過本地 Python 伺服器（推薦）
 
 在專案目錄下執行：
 
@@ -80,20 +135,12 @@ python3 server.py
 ===========================================================
 🎓 全台大專院校學測錄取資料庫 Web 伺服器已啟動
 📍 本地網址: http://localhost:8080/
-📁 網頁目錄: .../web
+📁 網頁目錄: .../taiwan-gsat-database
 💾 SQLite 資料庫: .../data/taiwan_gsat.db
 ===========================================================
 ```
 
-開啟瀏覽器並造訪 [http://localhost:8080/](http://localhost:8080/) 即可暢快使用！
-
-### 方式二：直接開啟靜態網頁（離線可用）
-
-本系統資料庫已整合為純前端可用之靜態資料集，您也可以直接在檔案總管或終端機中開啟 `web/index.html`：
-
-```bash
-open web/index.html
-```
+開啟瀏覽器並造訪 [http://localhost:8080/](http://localhost:8080/) 即可使用。
 
 ---
 

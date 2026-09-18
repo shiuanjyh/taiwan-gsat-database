@@ -17,9 +17,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_DIR = os.path.join(BASE_DIR, 'web')
 DB_PATH = os.path.join(BASE_DIR, 'data', 'taiwan_gsat.db')
 
+SERVE_DIR = BASE_DIR if os.path.exists(os.path.join(BASE_DIR, 'index.html')) else WEB_DIR
+
 class GSATServerHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=WEB_DIR, **kwargs)
+        super().__init__(*args, directory=SERVE_DIR, **kwargs)
 
     def end_headers(self):
         # Enable CORS and caching headers
@@ -160,7 +162,7 @@ def run():
     print(f"===========================================================")
     print(f"🎓 全台大專院校學測錄取資料庫 Web 伺服器已啟動")
     print(f"📍 本地網址: http://localhost:{PORT}/")
-    print(f"📁 網頁目錄: {WEB_DIR}")
+    print(f"📁 網頁目錄: {SERVE_DIR}")
     print(f"💾 SQLite 資料庫: {DB_PATH}")
     print(f"===========================================================")
     try:
